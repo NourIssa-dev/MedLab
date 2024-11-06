@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<!-- Change to "Production" when you are ready to deploy -->
+	<context-param>
+		<param-name>javax.faces.PROJECT_STAGE</param-name>
+		<param-value>Production</param-value>
+	</context-param>
+	<context-param>
+		<param-name>primefaces.THEME</param-name>
+		<param-value>admin</param-value>
+	</context-param>
+	<context-param>
+		<param-name>primefaces.FONT_AWESOME</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>primefaces.MOVE_SCRIPTS_TO_BOTTOM</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>com.sun.faces.numberOfLogicalViews</param-name>
+		<param-value>6</param-value>
+	</context-param>
+	<context-param>
+		<param-name>com.sun.faces.numberOfViewsInSession</param-name>
+		<param-value>6</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.omnifaces.VIEW_SCOPE_MANAGER_MAX_ACTIVE_VIEW_SCOPES</param-name>
+		<param-value>6</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>server</param-value>
+	</context-param>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<filter>
+		<filter-name>gzipResponseFilter</filter-name>
+		<filter-class>org.omnifaces.filter.GzipResponseFilter</filter-class>
+		<init-param>
+			<description>The threshold size in bytes. Must be a number between 0 and 9999. Defaults to 150.
+            </description>
+			<param-name>threshold</param-name>
+			<param-value>200</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>gzipResponseFilter</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>mySecurityRealm</realm-name>
+		<form-login-config>
+			<form-login-page>/login.xhtml</form-login-page>
+			<form-error-page>/login-failed.html</form-error-page>
+		</form-login-config>
+	</login-config>
+
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error404.xhtml</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/error403.xhtml</location>
+	</error-page>
+	<security-role>
+		<role-name>ADMIN</role-name>
+	</security-role>
+	<security-role>
+		<role-name>CLERK</role-name>
+	</security-role>
+	<security-role>
+		<role-name>LAB TECHNICIAN</role-name>
+	</security-role>
+	<security-role>
+		<role-name>PATIENT</role-name>
+	</security-role>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views1</web-resource-name>
+			<url-pattern>/patients-list.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>CLERK</role-name>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views2</web-resource-name>
+			<url-pattern>/patient-form.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>CLERK</role-name>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views3</web-resource-name>
+			<url-pattern>/guarantors-list.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views4</web-resource-name>
+			<url-pattern>/guarantor-form.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views5</web-resource-name>
+			<url-pattern>/doctors-list.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>CLERK</role-name>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views6</web-resource-name>
+			<url-pattern>/doctor-form.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ClERK</role-name>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views7</web-resource-name>
+			<url-pattern>/tests-list.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views8</web-resource-name>
+			<url-pattern>/test-form.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views9</web-resource-name>
+			<url-pattern>/requests-list.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>CLERK</role-name>
+			<role-name>ADMIN</role-name>
+			<role-name>LAB TECHNICIAN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views10</web-resource-name>
+			<url-pattern>/request-form.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>CLERK</role-name>
+			<role-name>ADMIN</role-name>
+
+		</auth-constraint>
+	</security-constraint>
+
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views11</web-resource-name>
+			<url-pattern>/cashbox-report.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views12</web-resource-name>
+			<url-pattern>/cashbox-report2.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views13</web-resource-name>
+			<url-pattern>/result-form.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>LAB TECHNICIAN</role-name>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views14</web-resource-name>
+			<url-pattern>/clerk_form.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views15</web-resource-name>
+			<url-pattern>/clerks-list.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Views16</web-resource-name>
+			<url-pattern>/results-page.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>PATIENT</role-name>
+			<role-name>ADMIN</role-name>
+			<role-name>CLERK</role-name>
+		</auth-constraint>
+	</security-constraint>
+</web-app>

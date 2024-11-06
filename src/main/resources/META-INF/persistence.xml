@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://www.oracle.com/webfolder/technetwork/jsc/xml/ns/persistence/persistence_2_1.xsd">
+	 
+     <persistence-unit name="LabDS" transaction-type="JTA">
+		
+	
+		<jta-data-source>java:jboss/Labsss-ds</jta-data-source>
+     
+        <class>com.model.Doctor</class>
+		<class>com.model.Guarantor</class>
+		<class>com.model.Patient</class>
+		<class>com.model.RequestPayment</class>
+		<class>com.model.Request</class>
+		<class>com.model.Test</class>
+		<class>com.model.RequestDetail</class>
+		<class>com.model.Category</class>
+		<class>com.model.Clerk</class>
+		   <properties>
+            <property name="javax.persistence.schema-generation.database.action" value="create" />
+            <property name="eclipselink.ddl-generation" value="update-tables"/> <!-- needed by payara/eclipselink -->
+            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/> <!-- needed by tomee/openjpa -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="eclipselink.weaving" value="false"/>
+            <property name="eclipselink.weaving.eager" value="false"/>
+            <property name="eclipselink.weaving.changetracking" value="false"/>
+            <property name="hibernate.enable_lazy_load_no_trans" value="true" />
+            <property name="eclipselink.weaving.lazy" value="true"/>
+            <property name="eclipselink.weaving.internal" value="true"/>
+            <property name="eclipselink.weaving.fetchgroups" value="true"/>
+        </properties>
+    </persistence-unit>
+	
+</persistence>

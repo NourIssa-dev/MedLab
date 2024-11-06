@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:o="http://omnifaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+                
+            
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="id" value="#{requestController.id}" converter="javax.faces.Integer"/>
+            <f:viewParam name="patientID" value="#{requestController.patientId}" />
+            <!-- use view action if you are in a Java EE 7 server: <f:viewAction action="#{requestController.init()}"/>-->
+              
+		  <o:enableRestorableView></o:enableRestorableView>
+        </f:metadata>
+        <ui:param name="renderFormAsterisks" value="true"/>
+    </ui:define>
+    <ui:define name="title">
+        Request form
+    </ui:define>
+  <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+    </ui:define>
+    <ui:define name="body">
+   <style>
+   body .ui-datatable table tbody td, body .ui-treetable table tbody td, body .ui-datatable table thead th, body .ui-treetable table thead th {
+    padding: 10px 10px;
+    border:solid 1px !important;
+}
+   </style>
+        <adm:breadcrumb title="#{requestController.isNew() ? 'New Request' : 'Request '.concat(requestController.id)}" link="request-form.xhtml?id=#{requestController.id}"/>
+        <h:form id="form" prependId="false">
+            <p:focus context="@form"/>
+            <p:panel styleClass="box-primary card">
+                <div id="main-buttons" class="hidden-sm hidden-xs">
+                    <p:commandButton value="Save" action="#{requestController.save}" update="@form"
+                                     icon="fa fa-check" styleClass="btn-primary"/>
+                    <p:spacer width="5" rendered="#{requestController.isNew()}"/>
+                    <p:commandButton value="Clear" action="#{requestController.clear}" process="@this"
+                                     icon="fa fa-refresh" styleClass="btn-success"
+                                     update="@form" rendered="#{requestController.isNew()}" resetValues="true"/>
+                    <p:spacer width="5" rendered="#{requestController.isNew()==false}"/>
+
+                    <p:commandButton value="Delete" action="#{requestController.remove}" process="@this"
+                                     rendered="#{requestController.isNew()== false}" icon="fa fa-trash"
+                                     styleClass="btn-danger">
+                        <f:setPropertyActionListener value="true"
+                                                     target="#{facesContext.externalContext.flash.keepMessages}"/>
+                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                    </p:commandButton>
+                    <p:spacer width="5"/>
+                    <p:commandButton value="Back" immediate="true"
+                                     action="requests-list?faces-redirect=true"
+                                     process="@this"
+                                     icon="fa fa-reply"/>
+                </div>
+                <p:splitButton value="Save" action="#{requestController.save}" update="@form"
+                               icon="fa fa-check"
+                               styleClass="hidden-md hidden-lg btn-primary">
+                  
+                    <p:menuitem value="Delete" action="#{requestController.remove}" process="@this"
+                                rendered="#{requestController.isNew()==false}" icon="fa fa-trash">
+                        <f:setPropertyActionListener value="true"
+                                                     target="#{facesContext.externalContext.flash.keepMessages}"/>
+                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                    </p:menuitem>
+                    <p:separator/>
+                    <p:menuitem value="Back" action="requests-list?faces-redirect=true"
+                                process="@this" immediate="true"
+                                icon="fa fa-reply"/>
+                </p:splitButton>
+
+                <hr/>
+
+                <div class="ui-g ui-fluid">
+                <p:panel header="Patient Details" style="margin-bottom: 20px;">
+                   <div class="ui-sm-12 ui-g-3 ui-g-nopad">
+					    <div class="ui-sm-12 ui-g-11">
+					        <p:outputLabel value="patientID" for="patientID" />
+					    </div>
+					    <div class="ui-sm-12 ui-g-11">
+					        <p:inputText id="patientID" value="#{requestController.patientId}" disabled="true" />
+					    </div>
+					</div>
+                <div class="ui-sm-12 ui-g-3 ui-g-nopad"> 
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel value="Patient Fname" for="inptFname"/>
+                        </div>
+                 <div class="ui-sm-12 ui-g-11" >
+                            <p:inputText id="inptFname" value="#{requestController.entityClass.patient.fname}" disabled="true" required="true"/>
+                        </div>
+                    </div>  
+                    <div class="ui-sm-12 ui-g-3 ui-g-nopad"> 
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel value="Patient Mname" for="inptMname"/>
+                        </div>
+                        <div class="ui-sm-12 ui-g-11" >
+                            <p:inputText id="inptMname" value="#{requestController.entityClass.patient.mname}" disabled="true" required="true"/>
+                        </div>
+                    </div>  
+                    <div class="ui-sm-12 ui-g-3 ui-g-nopad"> 
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel value="Patient Lname" for="inptLname"/>
+                        </div>
+                        <div class="ui-sm-12 ui-g-11" >
+                            <p:inputText id="inptLname" value="#{requestController.entityClass.patient.lname}" disabled="true" required="true"/>
+                        </div>
+                    </div>     
+                    <div class="ui-sm-12 ui-g-3 ui-g-nopad">     
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel value="Address" for="inptAddress"/>
+                        </div>
+                        <div class="ui-sm-12 ui-g-11" >
+                            <p:inputText id="inptAddress" value="#{requestController.entityClass.patient.address}" disabled="true" required="true"/>
+                        </div>
+                    </div>     
+                    <div class="ui-sm-12 ui-g-3 ui-g-nopad">     
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel value="Phone number" for="inptPhoneNumber"/>
+                        </div>
+                        <div class="ui-sm-12 ui-g-11" >
+                            <p:inputText  id="inptPhoneNumber" value="#{requestController.entityClass.patient.contactDetails.phoneNumber}" required="true">
+                        <p:ajax></p:ajax>
+                        </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-sm-12 ui-g-3 ui-g-nopad">     
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel value="Email" for="inptEmail"/>
+                        </div>
+                        <div class="ui-sm-12 ui-g-11" >
+                            <p:inputText id="inptEmail" value="#{requestController.entityClass.patient.contactDetails.email}" disabled="true" required="true"/>
+                        </div>
+                    </div>
+                        <div class="ui-sm-12 ui-g-3 ui-g-nopad">     
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel value="Date Of Birth" for="inptDateOfBirth"/>
+                        </div>
+                         <div class="ui-sm-12 ui-g-11" >
+						    <p:inputMask id="inptDateOfBirth" mask="99/99/9999" value="#{requestController.entityClass.patient.dateOfBirth}" disabled="true" style="width:8em;" >
+						        <f:convertDateTime pattern="dd/MM/yyyy" />
+						        <p:ajax update="inptAge" event="change" process="@this" />
+						    </p:inputMask>
+                        </div>
+                    </div>
+                        <div class="ui-sm-12 ui-g-3 ui-g-nopad">     
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel value="Age" for="inptAge"/>
+                        </div>
+                         <div class="ui-sm-12 ui-g-11" > 
+                            <p:inputText disabled="true" id="inptAge" value="#{requestController.entityClass.patient.age}" required="true"/>
+                        </div>
+                    </div>
+                        <div class="ui-sm-12 ui-g-3 ui-g-nopad">     
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel value="Gender" for="inptGender"/>
+                        </div>
+                         <div class="ui-sm-12 ui-g-11" >
+                            <p:inputText id="inptGender" value="#{requestController.entityClass.patient.gender}" disabled="true" required="true"/>
+                        </div>
+                    </div>
+              </p:panel>
+                
+                <p:panel header="Request Details" style="margin-bottom: 20px;">
+                   
+                    <div class="ui-sm-12 ui-g-3 ui-g-nopad">     
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel value="Request Date" for="inptReqDate"/>
+                        </div>
+                         <div class="ui-sm-12 ui-g-12" >
+						    <p:inputMask id="inptReqDate" mask="99/99/9999 99:99" value="#{requestController.entityClass.reqDate}" style="width:90%;" >
+						        <f:convertDateTime pattern="dd/MM/yyyy hh:mm" />
+						    </p:inputMask>
+			               <span class="help-block">
+                                <p:message for="inptReqDate" />
+                            </span>
+                        </div>
+                    </div>
+				    <p:growl id="msgs" showDetail="true" skipDetailIfEqualsSummary="true"/>
+<div class="ui-sm-12 ui-g-3 ui-g-nopad">
+							<div class="ui-sm-12 ui-g-12">
+								<div style="margin-bottom: 12px;">
+									<p:outputLabel value="Doctor" for="dct" />
+								</div>
+								<p:selectOneMenu id="dct"
+									value="#{requestController.entityClass.doctor}"
+									converter="doctorConverter" style="width:90%;">
+									<f:selectItem itemLabel="Select Doctor" itemValue="#{null}"
+										noSelectionOption="true" />
+									<f:selectItems value="#{requestController.doctorList}"
+										var="doctor" itemLabel="#{doctor.getFullName()}"
+										itemValue="#{doctor}" />
+										<p:ajax></p:ajax>
+								</p:selectOneMenu>
+							</div>
+						</div>
+						<div class="ui-sm-12 ui-g-3 ui-g-nopad">
+							<div class="ui-sm-12 ui-g-12">
+								<div style="margin-bottom: 12px;">
+									<p:outputLabel value="Guarantor" for="guarantor" />
+								</div>
+								<p:selectOneMenu id="guarantor"
+									value="#{requestController.entityClass.guarantor}"
+									converter="guarantorConverter" style="width:90%;">
+									<f:selectItem itemLabel="Select Guarantor" itemValue="#{null}"
+										noSelectionOption="true" />
+									<f:selectItems value="#{requestController.guarList}"
+										var="guarantor" itemLabel="#{guarantor.guarName}"
+										itemValue="#{guarantor}" />
+										<p:ajax></p:ajax>
+								</p:selectOneMenu>
+							</div>
+						</div>
+						<div class="ui-sm-12 ui-g-3 ui-g-nopad">
+							<div class="ui-sm-12 ui-g-11">
+								<p:outputLabel for="percentage" value="Percentage" />
+							</div>
+							<div class="ui-sm-12 ui-g-11">
+								<p:inputText id="percentage"
+									value="#{requestController.percentage}"
+									styleClass="form-control" style="width: 100%" >
+									<p:ajax update="@form"/>
+									<f:validateDoubleRange minimum="0" maximum="100"></f:validateDoubleRange>
+									</p:inputText>
+								<span class="help-block"> <p:message for="percentage" />
+								</span>
+							</div>
+						</div>
+
+
+						<div class="ui-sm-12 ui-g-12 ui-g-nopad">
+						<div class="ui-sm-3 ui-g-3">
+								<div style="margin-bottom: 12px;">
+									<p:outputLabel value="Category" for="category" />
+								</div>
+								<p:selectOneMenu id="category" 
+									value="#{requestController.selectedCategory}"
+									converter="categoryConverter" >
+									<f:selectItem itemLabel="Select Category" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{requestController.categoryList}"
+										var="test" itemLabel="#{test.categoryName}"
+										itemValue="#{test}" />
+										<p:ajax process="@this" update="tests" listener="#{requestController.filterTests()}"></p:ajax>
+								</p:selectOneMenu>
+							</div>
+							<div class="ui-sm-3 ui-g-3">
+								<div style="margin-bottom: 12px;">
+									<p:outputLabel value="Tests" for="tests" />
+								</div>
+								<p:selectOneMenu id="tests" 
+									value="#{requestController.selectedTest}"
+									converter="testConverter" >
+									<f:selectItem itemLabel="Select Test" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{requestController.filteredTestList}"
+										var="test" itemLabel="#{test.testName}"
+										itemValue="#{test}" />
+										<p:ajax process="@this"></p:ajax>
+								</p:selectOneMenu>
+							</div>
+							
+					
+							
+							<div class="ui-sm-2 ui-g-2">
+								<div style="margin-bottom: 12px;">
+									<p:outputLabel value="" for="tests" />
+								</div>
+							<p:commandButton value="Add Test" ajax="true" process="@this" update="@form" actionListener="#{requestController.addNewRequestDetail()}" 
+                                     icon="fa fa-new" styleClass="btn-info">
+                                    
+                                     </p:commandButton>
+                                     </div>
+                                     
+						</div>
+						
+						
+						 
+						
+						
+						 <p:separator/>
+						<p:dataTable widgetVar="carsTable" var="c" id="myTable" style="display:inline-block !important;border:solid 1px !important"
+							value="#{requestController.entityClass.details}" 
+							rowKey="#{c.requestDetailID}" 
+							>
+						
+							<p:column headerText="Test Code">
+							
+                           #{c.test.testCode}
+                           </p:column>
+
+							<p:column headerText="Test Name">
+							
+                            #{c.test.testName}
+
+                        </p:column>
+
+							<p:column headerText="Price">
+							
+                            #{c.test.price}
+
+                        </p:column>
+
+						
+
+                        
+						</p:dataTable>
+
+
+
+						<div class="ui-sm-6 ui-g-6 ui-g-nopad" style="margin-left:30% !important">
+							<div class="ui-sm-12 ui-g-11">
+								<p:outputLabel value="Total Price" for="inptTotalPrice" />
+							</div>
+							<div class="ui-sm-12 ui-g-12">
+								<p:inputText id="inptTotalPrice" style="font-size:16px !important;border:solid 1px !important"
+									value="#{requestController.entityClass.totalPrice}"
+									readonly="true" />
+								<span class="help-block"> <p:message for="inptTotalPrice" />
+								</span>
+							</div>
+						</div>
+						<div class="ui-sm-12 ui-g-4 ui-g-nopad">     
+                        
+                       
+                    </div>     
+             </p:panel>
+             
+               <p:panel header="Payments" style="margin-bottom: 20px;">
+                  
+					
+						<p:dataTable widgetVar="carsTablee" var="c" id="myTablee" style="display:inline-block !important;border:double !important"
+							value="#{requestController.entityClass.payments}" 
+							rowKey="#{c.payID}" 
+							>
+						
+							<p:column headerText="Payment Type"  style="    color: black !important;
+    font-size: 25px;text-align: center !important;">
+							
+                           #{c.payType}
+                           </p:column>
+
+							<p:column headerText="Percentage"  style="    color: black !important;
+    font-size: 25px;text-align: center !important;">
+							
+                            #{c.percentage}
+
+                        </p:column>
+
+							<p:column headerText="Amount" style="    color: black !important;
+    font-size: 25px;text-align: center !important;">
+							
+                            #{c.amount}
+
+                        </p:column>
+						</p:dataTable>
+
+
+
+						
+						<div class="ui-sm-12 ui-g-4 ui-g-nopad">     
+                        
+                       
+                    </div>     
+             </p:panel>
+                </div>
+               
+                <h:panelGroup id="footer" layout="block" styleClass="hidden-sm hidden-md hidden-lg">
+                    <hr/>
+                    <p:splitButton value="Save" action="#{requestController.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                      
+                        <p:menuitem value="Delete" action="#{requestController.remove}" process="@this"
+                                    rendered="#{requestController.isNew()==false}" icon="fa fa-trash">
+                            <f:setPropertyActionListener value="true"
+                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="requests-list?faces-redirect=true"
+                                    process="@this" immediate="true"
+                                    icon="fa fa-reply"/>
+                   
+                    </p:splitButton>
+                </h:panelGroup>
+            </p:panel>
+            
+            
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

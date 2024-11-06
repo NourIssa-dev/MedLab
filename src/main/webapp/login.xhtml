@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:adm="http://github.com/adminfaces"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>MedLab</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['favicon/favicon.ico']}" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['favicon/favicon-16x16.png']}" sizes="16x16" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['favicon/favicon-32x32.png']}" sizes="32x32" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['favicon/favicon-96x96.png']}" sizes="96x96" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['favicon/favicon-144x144.png']}" sizes="144x144" />
+	<meta name="theme-color" content="#444" />
+	<meta name="mobile-web-app-capable" content="yes" />
+
+	<style type="text/css">
+body, html {
+	height: 100%;
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-page {
+	background: url('http://localhost:8080/MedLab/javax.faces.resource/Picture2.png.xhtml?ln=images') center fixed;
+	background-size: cover;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+body.login-page .login-logo {
+	margin: 20px;
+	text-align: center !important;
+	color: white;
+	font-family: serif;
+}
+
+.login-box {
+	background: rgb(197 223 226/ 80%);
+	padding: 20px;
+	border-radius: 15px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	width: 600px;
+}
+
+.login-logo {
+	font-size: 25px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.login-box-msg {
+	text-align: center;
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+
+.form-group {
+	position: relative;
+	margin-bottom: 15px;
+}
+
+.form-control-feedback {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	color: #aaa;
+}
+
+.btn-block {
+	width: 100%;
+	padding: 10px;
+	border: none;
+	border-radius: 5px;
+	margin-bottom: 10px;
+}
+
+.btn-primary {
+	background-color: #007bff;
+	color: white;
+}
+
+.btn-success {
+	background-color: #28a745;
+	color: white;
+}
+
+.btn-primary:hover, .btn-success:hover {
+	opacity: 0.9;
+}
+
+.login-form {
+	display: none;
+}
+
+.active-form {
+	display: block;
+}
+</style>
+	<script type="text/javascript">
+		function toggleForm(formId) {
+			document.getElementById('staffForm').style.display = 'none';
+			document.getElementById('patientForm').style.display = 'none';
+			document.getElementById(formId).style.display = 'block';
+		}
+	</script>
+</h:head>
+
+<h:body class="login-page">
+	<p:growl sticky="true">
+		<p:autoUpdate />
+	</p:growl>
+	<div id="loader" class="load-bar" style="display: none">
+		<div class="bar"></div>
+		<div class="bar"></div>
+		<div class="bar"></div>
+	</div>
+
+	<p:dialog id="adminStatusDialog" modal="true" widgetVar="statusDialog"
+		draggable="false" closable="false" resizable="false" responsive="true"
+		showHeader="false" appendTo="@(body)">
+	</p:dialog>
+
+	<div class="login-box">
+		<div class="login-logo">MedLab</div>
+		<div class="box login-box-body">
+			<h:form>
+				<div class="row">
+					<div class="col-xs-6">
+						<p:commandButton value="Sign in as Staff"
+							onclick="toggleForm('staffForm')"
+							styleClass="btn btn-primary btn-block" />
+					</div>
+					<div class="col-xs-6">
+						<p:commandButton value="Sign in as Patient"
+							onclick="toggleForm('patientForm')"
+							styleClass="btn btn-primary btn-block" />
+					</div>
+				</div>
+			</h:form>
+			<div style="margin-top: 30px;"></div>
+
+
+			<h:form id="staffForm" class="login-form">
+				<p class="login-box-msg">Sign in as Staff</p>
+				<p:messages closable="true" />
+				<div class="form-group has-feedback">
+					<p:inputText value="#{logonMB.email}" type="email"
+						styleClass="form-control" placeholder="enter username"
+						required="true" requiredMessage="Email is required." />
+					<i class="fa fa-envelope form-control-feedback"></i>
+				</div>
+				<div class="form-group has-feedback">
+					<p:inputText value="#{logonMB.password}" type="password"
+						styleClass="form-control" placeholder="Enter password"
+						required="true" requiredMessage="Password is required." />
+					<i class="fa fa-lock form-control-feedback" style="font-size: 18px"></i>
+				</div>
+				<div class="row">
+					<p:spacer height="10" />
+					<div class="col-xs-12">
+						<p:commandButton styleClass="btn btn-success btn-block"
+							action="#{logonMB.login}" onclick="showBar()"
+							oncomplete="if(args.validationFailed){hideBar()}" value="Sign In"
+							update="@form" />
+					</div>
+				</div>
+			</h:form>
+			<h:form id="patientForm" class="login-form">
+				<p class="login-box-msg">Sign in as Patient</p>
+				<p:messages closable="true" />
+				<div class="form-group has-feedback">
+					<p:inputText id="requestID" value="#{logonMB.requestID}"
+						styleClass="form-control" placeholder="Enter Request ID"
+						required="true" requiredMessage="RequestID is required." />
+					<i class="fa fa-envelope form-control-feedback"></i>
+				</div>
+				<div class="row">
+					<p:spacer height="10" />
+					<div class="col-xs-12">
+						<p:commandButton styleClass="btn btn-success btn-block"
+							action="#{logonMB.login}" onclick="showBar()"
+							oncomplete="if(args.validationFailed){hideBar()}" value="Sign In"
+							update="@form" />
+
+
+					</div>
+				</div>
+			</h:form>
+		</div>
+	</div>
+
+	<adm:ripple />
+	<h:outputScript library="js" name="admintemplate.js" target="head" />
+</h:body>
+</html>
